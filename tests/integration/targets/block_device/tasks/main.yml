@@ -30,10 +30,11 @@
       maas.maas.vm_host:
         state: present
         vm_host_name: "{{ test_vm_host }}"
+        machine_fqdn: "{{ test_vm_host }}"
         timeout: 180
         power_parameters:
           power_type: lxd
-          power_address: "{{ test_lxd_address }}"
+          power_address: "{{ test_vm_host }}"
         cpu_over_commit_ratio: 3
         memory_over_commit_ratio: 4
         default_macvlan_mode: passthru
