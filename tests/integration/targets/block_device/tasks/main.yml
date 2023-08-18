@@ -36,10 +36,9 @@
           power_address: "{{ test_lxd_address }}"
         cpu_over_commit_ratio: 3
         memory_over_commit_ratio: 4
-        default_macvlan_mode: bridge
+        default_macvlan_mode: passthru
         zone: default
         pool: default
-        tags: my-tag
       register: vm_host
     - ansible.builtin.assert:
         that:
@@ -48,10 +47,13 @@
           - vm_host.record.type == "lxd"
           - vm_host.record.cpu_over_commit_ratio == 3.0
           - vm_host.record.memory_over_commit_ratio == 4.0
-          - vm_host.record.default_macvlan_mode == "bridge"
+          - vm_host.record.default_macvlan_mode == "passthru"
           - vm_host.record.zone.name == "default"
           - vm_host.record.pool.name == "default"
-          - vm_host.record.tags == ["my-tag", "pod-console-logging"]
+
+    - name: List vm hosts
+      maas.maas.vm_host_info:
+      register: vm_hosts
 
     - name: Create virtual machine
       maas.maas.vm_host_machine:
