@@ -26,6 +26,33 @@
         state: absent
 
     # --------------------------------Fixture------------------------------------
+    - name: Register LXD VM host
+      maas.maas.vm_host:
+        state: present
+        vm_host_name: "{{ test_vm_host }}"
+        timeout: 180
+        power_parameters:
+          power_type: lxd
+          power_address: "{{ test_lxd_address }}"
+        cpu_over_commit_ratio: 3
+        memory_over_commit_ratio: 4
+        default_macvlan_mode: bridge
+        zone: default
+        pool: default
+        tags: my-tag
+      register: vm_host
+    - ansible.builtin.assert:
+        that:
+          - vm_host is changed
+          - vm_host.record.name == {{ test_vm_host }}
+          - vm_host.record.type == "lxd"
+          - vm_host.record.cpu_over_commit_ratio == 3.0
+          - vm_host.record.memory_over_commit_ratio == 4.0
+          - vm_host.record.default_macvlan_mode == "bridge"
+          - vm_host.record.zone.name == "default"
+          - vm_host.record.pool.name == "default"
+          - vm_host.record.tags == ["my-tag", "pod-console-logging"]
+
     - name: Create virtual machine
       maas.maas.vm_host_machine:
         hostname: block-device-test
