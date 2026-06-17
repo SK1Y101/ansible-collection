@@ -189,16 +189,14 @@ def data_for_add_machine(module):
         not module.params["power_type"]
         or not module.params["power_parameters"]
     ):
-        raise errors.MissingValueAnsible(
-            "power_type, power_parameters"
-        )
+        raise errors.MissingValueAnsible("power_type, power_parameters")
     if (
-        module.params["power_type"].lower() != "ipmi" and
-        not module.params["pxe_mac_address"]
+        module.params["power_type"].lower() != "ipmi"
+        and not module.params["pxe_mac_address"]
     ):
         raise errors.MissingValueAnsible(
             "pxe_mac_address must be supplied with "
-            "power type: {module.params['power_type']}"
+            f"power type: {module.params['power_type']}"
         )
     data["power_type"] = module.params["power_type"]  # required
     data["power_parameters"] = json.dumps(
